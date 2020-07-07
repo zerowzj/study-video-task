@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xdf.ucan.remix.video.task.dao.videorecord.VideoRecordDao">
+    <resultMap id="Base_Result_Map" type="VideoRecordEO">
+        <result property="vrId" column="vr_id"/>
+        <result property="vrRoomId" column="vr_room_id"/>
+        <result property="vrName" column="vr_name"/>
+        <result property="vrSize" column="vr_size"/>
+        <result property="vrDuration" column="vr_duration"/>
+        <result property="vrStorePath" column="vr_store_path"/>
+        <result property="vrStoreType" column="vr_store_type"/>
+        <result property="vrIsLast" column="vr_is_last"/>
+        <result property="vrStatus" column="vr_status"/>
+        <result property="vrBeginTime" column="vr_begin_time"/>
+        <result property="vrEndTime" column="vr_end_time"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        vr.vr_id,
+        vr.vr_room_id,
+        vr.vr_name,
+        vr.vr_size,
+        vr.vr_duration,
+        vr.vr_store_path,
+        vr.vr_store_type,
+        vr.vr_is_last,
+        vr.vr_status,
+        vr.vr_begin_time,
+        vr.vr_end_time
+    </sql>
+
+    <insert id="insert" parameterType="VideoRecordEO" useGeneratedKeys="true" keyProperty="vrId">
+        insert into video_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="vrRoomId != null">vr_room_id,</if>
+            <if test="vrName != null">vr_name,</if>
+            <if test="vrSize != null">vr_size,</if>
+            <if test="vrDuration != null">vr_duration,</if>
+            <if test="vrStorePath != null">vr_store_path,</if>
+            <if test="vrStoreType != null">vr_store_type,</if>
+            <if test="vrIsLast != null">vr_is_last,</if>
+            <if test="vrStatus != null">vr_status,</if>
+            <if test="vrBeginTime != null">vr_begin_time,</if>
+            <if test="vrEndTime != null">vr_end_time</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="vrRoomId != null">#{vrRoomId},</if>
+            <if test="vrName != null">#{vrName},</if>
+            <if test="vrSize != null">#{vrSize},</if>
+            <if test="vrDuration != null">#{vrDuration},</if>
+            <if test="vrStorePath != null">#{vrStorePath},</if>
+            <if test="vrStoreType != null">#{vrStoreType},</if>
+            <if test="vrIsLast != null">#{vrIsLast},</if>
+            <if test="vrStatus != null">#{vrStatus},</if>
+            <if test="vrBeginTime != null">#{vrBeginTime},</if>
+            <if test="vrEndTime != null">#{vrEndTime}</if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="VideoRecordEO">
+        update video_record
+        <trim prefix="set" suffixOverrides=",">
+            <if test="vrStatus != null">vr_status=#{vrStatus}</if>
+            <if test="vrEndTime != null">,vr_end_time=#{vrEndTime}</if>
+        </trim>
+        where vr_id = #{vrId}
+    </update>
+
+    <select id="get" resultMap="Base_Result_Map">
+        select
+        <include refid="Base_Column_List"/>
+        from   vr
+        where vr.vr_id = #{vrId}
+    </select>
+
+    <select id="getNeedUploadRecordLt" resultMap="Base_Result_Map">
+        select
+        <include refid="Base_Column_List"/>
+        from video_record vr
+        where vr.vr_status = 1
+        <if test="startTime != null">
+            and vr.vr_begin_time >= #{startTime}
+        </if>
+        <if test="endTime != null">
+            and #{endTime} >= vr.vr_begin_time
+        </if>
+    </select>
+
+    <select id="getNeedConcatRoomIdLt" resultType="java.lang.String">
+        select distinct vr.vr_room_id
+        from video_record vr
+        where vr.vr_status = 3
+        and vr.vr_is_last = 1
+        <if test="startTime != null">
+            and vr.vr_begin_time >= #{startTime}
+        </if>
+        <if test="endTime != null">
+            and #{endTime} >= vr.vr_begin_time
+        </if>
+    </select>
+
+    <select id="getVideoRecordLtByRoomId" resultMap="Base_Result_Map">
+        select
+        <include refid="Base_Column_List"/>
+        from video_record vr
+        <where>
+            <if test="roomId != null">
+                vr.vr_room_id=#{roomId}
+            </if>
+        </where>
+    </select>
+</mapper>

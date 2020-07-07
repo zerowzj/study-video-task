@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xdf.ucan.remix.video.task.dao.videostream.VideoStreamDao">
+    <resultMap id="Base_Result_Map" type="VideoStreamEO">
+        <result property="vsId" column="vs_id"/>
+        <result property="vsRoomId" column="vs_room_id"/>
+        <result property="vsStreamId" column="vs_stream_id"/>
+        <result property="vsStatus" column="vs_status"/>
+        <result property="vsBeginTime" column="vs_begin_time"/>
+        <result property="vsEndTime" column="vs_end_time"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        vs.vs_id,
+        vs.vs_room_id,
+        vs.vs_stream_id,
+        vs.vs_status,
+        vs.vs_begin_time,
+        vs.vs_end_time
+    </sql>
+
+    <insert id="insert" parameterType="VideoStreamEO" useGeneratedKeys="true" keyProperty="vsId">
+        insert into video_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="vsRoomId != null">vs_room_id,</if>
+            <if test="vsStreamId != null">vs_stream_id,</if>
+            <if test="vsStatus != null">vs_status,</if>
+            <if test="vsBeginTime != null">vs_begin_time,</if>
+            <if test="vsEndTime != null">vs_end_time</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="vsRoomId != null">#{vsRoomId},</if>
+            <if test="vsStreamId != null">#{vsStreamId},</if>
+            <if test="vsStatus != null">#{vsStatus},</if>
+            <if test="vsBeginTime != null">#{vsBeginTime},</if>
+            <if test="vsEndTime != null">#{vsEndTime}</if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="VideoStreamEO">
+        update video_stream
+        <trim prefix="set" suffixOverrides=",">
+            <if test="vsStatus != null">vs_status=#{vsStatus},</if>
+            <if test="vsEndTime != null">vs_end_time=#{vsEndTime}</if>
+        </trim>
+        where vs_id = #{vsId}
+    </update>
+
+    <update id="updateByRoomId" parameterType="VideoStreamEO">
+        update video_stream
+        <trim prefix="set" suffixOverrides=",">
+            <if test="vrStatus != null">vr_status=#{vrStatus},</if>
+            <if test="vrEndTime != null">vr_end_time=#{vrEndTime}</if>
+        </trim>
+        where vs_room_id = #{vrId}
+    </update>
+
+    <select id="getVideoStreamLogByRoomId" resultMap="Base_Result_Map">
+        select
+        <include refid="Base_Column_List"/>
+        from video_stream vs
+        where vs.vs_room_id = #{vrId}
+    </select>
+
+    <select id="getNeedConcatRoomIdLt" resultMap="Base_Result_Map">
+        select
+        <include refid="Base_Column_List"/>
+        from video_stream vs
+        where vs.vs_room_id = #{vrId}
+    </select>
+
+</mapper>

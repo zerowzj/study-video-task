@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xdf.ucan.remix.video.task.dao.videorecordlog.VideoRecordLogDao">
+    <resultMap id="Base_Result_Map" type="VideoRecordLogEO">
+        <result property="vrlId" column="vrl_id"/>
+        <result property="vrlVrId" column="vrl_vr_Id"/>
+        <result property="vrlRoomId" column="vrl_room_Id"/>
+        <result property="vrlUploadRequestId" column="vrl_upload_request_id"/>
+        <result property="vrlUploadTaskId" column="vrl_upload_task_id"/>
+        <result property="vrlUploadResultMsg" column="vrl_upload_result_msg"/>
+        <result property="vrlUploadFileId" column="vrl_upload_file_id"/>
+        <result property="vrlUploadFileUrl" column="vrl_upload_file_url"/>
+        <result property="vrlUploadBeginTime" column="vrl_upload_begin_time"/>
+        <result property="vrlUploadEndTime" column="vrl_upload_end_time"/>
+        <result property="vrlVodRequestId" column="vrl_vod_request_id"/>
+        <result property="vrlVodTaskId" column="vrl_vod_task_id"/>
+        <result property="vrlVodResultMsg" column="vrl_vod_result_msg"/>
+        <result property="vrlVodFileId" column="vrl_vod_file_id"/>
+        <result property="vrlVodFileUrl" column="vrl_vod_file_url"/>
+        <result property="vrlVodBeginTime" column="vrl_vod_begin_time"/>
+        <result property="vrlVodEndTime" column="vrl_vod_end_time"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        vrl.vrl_id,
+        vrl.vrl_vr_id,
+        vrl.vrl_room_Id,
+        vrl.vrl_upload_request_id,
+        vrl.vrl_upload_task_id,
+        vrl.vrl_upload_result_msg,
+        vrl.vrl_upload_file_id,
+        vrl.vrl_upload_file_url,
+        vrl.vrl_upload_begin_time,
+        vrl.vrl_upload_end_time,
+        vrl.vrl_vod_request_id,
+        vrl.vrl_vod_task_id,
+        vrl.vrl_vod_file_id,
+        vrl.vrl_vod_file_url,
+        vrl.vrl_vod_result_msg,
+        vrl.vrl_vod_begin_time,
+        vrl.vrl_vod_end_time
+    </sql>
+
+    <insert id="insert" parameterType="VideoRecordLogEO" useGeneratedKeys="true" keyProperty="vrlId">
+        insert into video_record_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="vrlVrId != null">vrl_vr_id,</if>
+            <if test="vrlRoomId != null">vrl_room_Id,</if>
+            <if test="vrlUploadRequestId != null">vrl_upload_request_id,</if>
+            <if test="vrlUploadTaskId != null">vrl_upload_task_id,</if>
+            <if test="vrlUploadBeginTime != null">vrl_upload_begin_time</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="vrlVrId != null">#{vrlVrId},</if>
+            <if test="vrlRoomId != null">#{vrlRoomId},</if>
+            <if test="vrlUploadRequestId != null">#{vrlUploadRequestId},</if>
+            <if test="vrlUploadTaskId != null">#{vrlUploadTaskId},</if>
+            <if test="vrlUploadBeginTime != null">#{vrlUploadBeginTime}</if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="VideoRecordLogEO">
+        update video_record_log
+        <trim prefix="set" suffixOverrides=",">
+            <if test="vrlUploadResultMsg != null">vrl_upload_result_msg=#{vrlUploadResultMsg},</if>
+            <if test="vrlUploadFileId != null">vrl_upload_file_id=#{vrlUploadFileId},</if>
+            <if test="vrlUploadFileUrl != null">vrl_upload_file_url=#{vrlUploadFileUrl},</if>
+            <if test="vrlUploadEndTime != null">vrl_upload_end_time=#{vrlUploadEndTime},</if>
+            <if test="vrlVodRequestId != null">vrl_vod_request_id=#{vrlVodRequestId},</if>
+            <if test="vrlVodTaskId != null">vrl_vod_task_id=#{vrlVodTaskId},</if>
+            <if test="vrlVodResultMsg != null">vrl_vod_result_msg=#{vrlVodResultMsg},</if>
+            <if test="vrlVodFileId != null">vrl_vod_file_id=#{vrlVodFileId},</if>
+            <if test="vrlVodFileUrl != null">vrl_vod_file_url=#{vrlVodFileUrl},</if>
+            <if test="vrlVodBeginTime != null">vrl_vod_begin_time=#{vrlVodBeginTime},</if>
+            <if test="vrlVodEndTime != null">vrl_vod_end_time=#{vrlVodEndTime}</if>
+        </trim>
+        where vrl_id = #{vrlId}
+    </update>
+
+    <select id="getRecordLogByTaskId" resultMap="Base_Result_Map">
+        select
+        <include refid="Base_Column_List"/>
+        from video_record_log vrl
+        <where>
+            <if test="uploadTaskId != null">
+                vrl.vrl_upload_task_id=#{uploadTaskId}
+            </if>
+            <if test="vodTaskId != null">
+                and vrl.vrl_vod_task_id=#{vodTaskId}
+            </if>
+        </where>
+        limit 1
+    </select>
+
+    <select id="getRecordLogLtByRoomId" resultMap="Base_Result_Map">
+        select
+        <include refid="Base_Column_List"/>
+        from video_record_log vrl
+        <where>
+            <if test="roomId != null">
+                vrl.vrl_room_id=#{roomId}
+            </if>
+        </where>
+    </select>
+</mapper>
